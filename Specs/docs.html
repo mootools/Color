@@ -1,0 +1,1268 @@
+<!DOCTYE html>
+
+<html>
+
+	<style type="text/css">
+		body {
+			font-family: Helvetica;
+			font-size: 75%;
+			line-height: 1.5;
+			color: #313334;
+			background: #F9F9F9;
+		}
+		h1, h2, h3, h4, h5, h6 {
+			color: #313334;
+			font-weight: bold;
+		}
+		h1 a:link, h1 a:visited {
+			color: #C17878;
+			text-decoration: none;
+		}
+		h2 a:link, h2 a:visited {
+			color: #78BA91;
+			text-decoration: none;
+		}
+		a:link, a:visited {
+			color: #6B7B95;
+		}
+		a:hover, a:active {
+			color: #E79D35;
+		}
+		pre {
+			background: white;
+			border-top: 1px solid #EEE;
+			border-bottom: 1px solid #EEE;
+			padding: 5px 7px;
+			font-size: 12px;
+			font-family 'andale mono', 'lucida console', monospace;
+			line-height: 1.5;
+			margin: 1.5em 0;
+			white-space: pre;
+		}
+		.detail, .menu {
+			float: left;
+		}
+		.detail {
+			width: 75%;
+			margin-right: 5%;
+		}
+		.menu {
+			width: 20%;
+		}
+	</style>
+	
+<body>
+
+
+<div class="detail">
+
+<h1 id="Color"><a href="#Color">Class: Color</a></h1>
+
+<p class="description">
+	Instances of the Color class serve as abstract reprentations of the color itself, and don't need to be transformed from one format to another.
+	A single Color instance can have any component (red, green, blue, hue, saturation, lightness, brightness, alpha) updated regardless of the source, 
+	and all other components will be normalized automatically (e.g., setting the red component of a purplish color (7766CC) will update both the brightness and lightness components).
+	If a Color is instanced using a hex value, it can have it's lightness component updated directly despite lightness being a HSL component.
+	Further, the same color instance can output it's component values in any format without any extra conversions.  When parsing a color representation,
+	(either during instantiation, or via the parse method), the instance will attempt to determine the format supplied - if this is understood, toString calls will return
+	the updated component values formatted in the same way (e.g., if instantiating a Color instance by passing an rgba string, subsequent calls to toString will also output 
+	an rgba string, but with updated values as transformations are applied to the color).  The format of toString can be changed at any time, or direct formatting methods are available.
+	Conversion methods (getRGB, getHex) are provided simply as sugar, and don't perform any actual transformations.
+	They are not required for use or translation.  The standard component parts are available as instance methods - if passed with an argument, the method will set the component value.
+	Each component method returns the value as well (with or without setter argument).
+	These components perform transformations and dispatch events, and can be used without any sugar to manage the Color instance.
+</p>
+
+<h2><a href="#">Color Method: constructor</a></h2>
+
+<h3 class="description">Syntax</h3>
+
+<pre class="javascript">
+var color = new Color([color]);
+</pre>
+
+<h3>Arguments</h3>
+
+<ol>
+	<li>color - (<em>mixed</em>, optional) A string, number or object representation of a color.</li>
+</ol>
+
+<h3>Color</h3>
+
+<p>
+	The constructor will use the parse method to try to convert a string, number or object to a valid color value, and can understand most human-readable representations as well as 
+	the return values of currentStyle or computedStyle (e.g., #FF0000, F00, rgb(100, 50, 25), rgba(100%, 50%, 0%, 0.8), hsla(360, 50%, 50%, 0.5), 16788595, 'orange', { red : 255, green : 100 })
+</p>
+
+<h3>Examples</h3>
+
+<pre class="javascript">
+var color = new Color('F90');
+var color = new Color('#FF9900');
+var color = new Color('orange');
+var color = new Color('rgb(255, 103, 0)');
+var color = new Color('rgba(100%, 50%, 0, 1)');
+var color = new Color('hsl(360, 100%, 100%)');
+var color = new Color(16788595);
+var color = new Color({ red : 255, green : 103 });
+var color = new Color(myElement.getStyle('color'));
+</pre>
+
+<h3>Returns</h3>
+
+<ul>
+<li>(<em>Color</em>) A new Color instance.</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+<h2 id="Color:parse"><a href="#Color:parse">Color Method: parse</a></h2>
+
+<p class="description">Convert mixed variable to Color component properties, and adopt those properties.</p>
+
+<h3>Syntax</h3>
+<pre class="javascript">
+myColor.parse(value);
+</pre>
+
+<h3>Arguments</h3>
+
+<ol>
+<li>value - (<em>mixed</em>) A string, object or number color representation, including all valid CSS values. e.g., #FF9900, rgb(255, 153, 0), rgba(100%, 40%, 0%, 0.8); a hash with properties mapped to the Color instance e.g., red, green, saturation, brightness;another Color instance; a decimal color value; a named CSS color</li>
+</ol>
+
+<h3>Returns</h3>
+<ul>
+<li>(<em>Color</em>) This Color</li>
+</ul>
+
+<h3>Examples</h3>
+<pre class="javascript">
+var black = new Color();
+black.parse('F90');
+black.parse('#FF9900');
+black.parse('black');
+black.parse('rgb(255, 103, 0)');
+black.parse('rgba(100%, 50%, 0, 1)');
+black.parse('hsl(360, 100%, 100%)');
+black.parse(16788595);
+black.parse({ red : 255, green : 103 });
+black.parse(myElement.getStyle('color'));
+</pre>
+
+
+
+
+
+
+
+
+
+<h2 id="Color:hex"><a href="#Color:hex">Color Method: hex</a></h2>
+
+<p class="description">Set the hex component value of the color, updates all other components, and dispatches Event.UPDATED</p>
+
+<h3>Syntax</h3>
+<pre class="javascript">
+var somevar = myColor.hex([value]);
+</pre>
+
+<h3>Arguments</h3>
+
+<ol>
+<li>value - (<em>string</em>, optional) hex value to set (#000000 to #FFFFFF) </li>
+</ol>
+
+<h3>Returns</h3>
+
+<ul>
+<li>(<em>string</em>) The hex value of the Color instance.</li>
+</ul>
+
+<h3>Examples</h3>
+
+<pre class="javascript">
+var orange = new Color('#FF9900');
+console.log(orange.getHex()); // outputs #Ff9900
+orange.hex('#00FF00');
+console.log(orange.getHex());  // outputs #00FF00
+</pre>
+
+
+
+
+
+
+
+
+<h2 id="Color:red"><a href="#Color:red">Color Method: red</a></h2>
+
+<p class="description">Set the red component value of the color, updates all other components, and dispatches Event.UPDATED</p>
+
+<h3>Syntax</h3>
+<pre class="javascript">
+var somevar = myColor.red([value]);
+</pre>
+
+<h3>Arguments</h3>
+
+<ol>
+<li>value - (<em>number</em>, optional) 0 - 255 red component value to set</li>
+</ol>
+
+<h3>Returns</h3>
+
+<ul>
+<li>(<em>number</em>) The red component value of the Color instance.</li>
+</ul>
+
+<h3>Examples</h3>
+
+<pre class="javascript">
+var orange = new Color('#FF9900');
+console.log(orange.red()); // outputs 255
+orange.red(0);
+console.log(orange.getHex());  // outputs #009900
+</pre>
+
+
+
+
+
+
+
+<h2 id="Color:green"><a href="#Color:green">Color Method: green</a></h2>
+
+<p class="description">Set the green component value of the color, updates all other components, and dispatches Event.UPDATED</p>
+
+<h3>Syntax</h3>
+<pre class="javascript">
+var somevar = myColor.green([value]);
+</pre>
+
+<h3>Arguments</h3>
+
+<ol>
+<li>value - (<em>number</em>, optional) 0 - 255 green component value to set</li>
+</ol>
+
+<h3>Returns</h3>
+
+<ul>
+<li>(<em>number</em>) The green component value of the Color instance.</li>
+</ul>
+
+<h3>Examples</h3>
+
+<pre class="javascript">
+var orange = new Color('#FF9900');
+console.log(orange.green());  // outputs 153
+orange.green(0);
+console.log(orange.getHex());  // outputs #FF0000
+</pre>
+
+
+
+
+
+
+<h2 id="Color:blue"><a href="#Color:blue">Color Method: blue</a></h2>
+
+<p class="description">Set the blue component value of the color, updates all other components, and dispatches Event.UPDATED</p>
+
+<h3>Syntax</h3>
+<pre class="javascript">
+var somevar = myColor.blue([value]);
+</pre>
+
+<h3>Arguments</h3>
+
+<ol>
+<li>value - (<em>number</em>, optional) 0 - 255 blue component value to set</li>
+</ol>
+
+<h3>Returns</h3>
+
+<ul>
+<li>(<em>number</em>) The blue component value of the Color instance.</li>
+</ul>
+
+<h3>Examples</h3>
+
+<pre class="javascript">
+var orange = new Color('#FF9900');
+console.log(orange.blue());  // outputs 0
+orange.blue(255);
+console.log(orange.getHex());  // outputs #FF99FF
+</pre>
+
+
+
+
+
+
+
+
+
+
+
+
+<h2 id="Color:hue"><a href="#Color:hue">Color Method: hue</a></h2>
+
+<p class="description">Set the hue component value of the color, updates all other components, and dispatches Event.UPDATED</p>
+
+<h3>Syntax</h3>
+<pre class="javascript">
+var somevar = myColor.hue([value]);
+</pre>
+
+<h3>Arguments</h3>
+
+<ol>
+<li>value - (<em>number</em>, optional) 0 - 360 hue component value to set</li>
+</ol>
+
+<h3>Returns</h3>
+
+<ul>
+<li>(<em>number</em>) The hue component value of the Color instance.</li>
+</ul>
+
+<h3>Examples</h3>
+
+<pre class="javascript">
+var orange = new Color('#FF9900');
+console.log(orange.hue());  // outputs 36
+orange.hue(360);
+console.log(orange.getHex());  // outputs #FF0000
+</pre>
+
+
+
+
+
+
+
+
+
+
+
+<h2 id="Color:saturation"><a href="#Color:saturation">Color Method: saturation</a></h2>
+
+<p class="description">Set the saturation component value of the color, updates all other components, and dispatches Event.UPDATED</p>
+
+<h3>Syntax</h3>
+<pre class="javascript">
+var somevar = myColor.saturation([value]);
+</pre>
+
+<h3>Arguments</h3>
+
+<ol>
+<li>value - (<em>number</em>, optional) 0 - 100 saturation component value to set</li>
+</ol>
+
+<h3>Returns</h3>
+
+<ul>
+<li>(<em>number</em>) The saturation component value of the Color instance.</li>
+</ul>
+
+<h3>Examples</h3>
+
+<pre class="javascript">
+var orange = new Color('#FF9900');
+console.log(orange.saturation());  // outputs 100
+orange.saturation(50);
+console.log(orange.getHex());  // outputs #BF8C3F
+</pre>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h2 id="Color:lightness"><a href="#Color:lightness">Color Method: lightness</a></h2>
+
+<p class="description">Set the lightness component value of the color, updates all other components, and dispatches Event.UPDATED</p>
+
+<h3>Syntax</h3>
+<pre class="javascript">
+var somevar = myColor.lightness([value]);
+</pre>
+
+<h3>Arguments</h3>
+
+<ol>
+<li>value - (<em>number</em>, optional) 0 - 100 lightness component value to set</li>
+</ol>
+
+<h3>Returns</h3>
+
+<ul>
+<li>(<em>number</em>) The lightness component value of the Color instance.</li>
+</ul>
+
+<h3>Examples</h3>
+
+<pre class="javascript">
+var orange = new Color('#FF9900');
+console.log(orange.lightness());  // outputs 50
+orange.lightness(50);
+console.log(orange.getHex());  // outputs #7F4C00
+</pre>
+
+
+
+
+
+
+
+
+
+
+
+<h2 id="Color:brightness"><a href="#Color:brightness">Color Method: brightness</a></h2>
+
+<p class="description">Set the brightness component value of the color, updates all other components, and dispatches Event.UPDATED</p>
+
+<h3>Syntax</h3>
+<pre class="javascript">
+var somevar = myColor.brightness([value]);
+</pre>
+
+<h3>Arguments</h3>
+
+<ol>
+<li>value - (<em>number</em>, optional) 0 - 100 brightness component value to set</li>
+</ol>
+
+<h3>Returns</h3>
+
+<ul>
+<li>(<em>number</em>) The brightness component value of the Color instance.</li>
+</ul>
+
+<h3>Examples</h3>
+
+<pre class="javascript">
+var orange = new Color('#FF9900');
+console.log(orange.brightness());  // outputs 100
+orange.brightness(25);
+console.log(orange.getHex());  // outputs #3F2600
+</pre>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h2 id="Color:decimal"><a href="#Color:decimal">Color Method: decimal</a></h2>
+
+<p class="description">Set the decimal component value of the color, updates all other components, and dispatches Event.UPDATED</p>
+
+<h3>Syntax</h3>
+<pre class="javascript">
+var somevar = myColor.decimal([value]);
+</pre>
+
+<h3>Arguments</h3>
+
+<ol>
+<li>value - (<em>number</em>, optional) 0 (black) to 16777215 (white) - the decimal value to set</li>
+</ol>
+
+<h3>Returns</h3>
+
+<ul>
+<li>(<em>number</em>) The decimal value of the Color instance.</li>
+</ul>
+
+<h3>Examples</h3>
+
+<pre class="javascript">
+var orange = new Color('#FF9900');
+console.log(orange.decimal());  // outputs 16750848
+orange.decimal(5000);
+console.log(orange.getHex());  // outputs #001388
+</pre>
+
+
+
+
+
+
+
+
+<h2 id="Color:alpha"><a href="#Color:alpha">Color Method: alpha</a></h2>
+
+<p class="description">Set the alpha component value of the color (opacity), updates all other components, and dispatches Event.UPDATED</p>
+
+<h3>Syntax</h3>
+<pre class="javascript">
+var somevar = myColor.alpha([value]);
+</pre>
+
+<h3>Arguments</h3>
+
+<ol>
+<li>value - (<em>number</em>, optional) 0 - 1 alpha component value to set</li>
+</ol>
+
+<h3>Returns</h3>
+
+<ul>
+<li>(<em>number</em>) The alpha component value of the Color instance.</li>
+</ul>
+
+<h3>Examples</h3>
+
+<pre class="javascript">
+var orange = new Color('#FF9900');
+console.log(orange.alpha());  // outputs 1
+orange.alpha(0.5);
+console.log(orange.getRGBA());  // outputs rgba(255, 153, 0, 0.5)
+</pre>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h2 id="Color:set"><a href="#Color:set">Color Method: set</a></h2>
+
+<p class="description">Set a color component value(s)</p>
+
+<h3>Syntax</h3>
+<pre class="javascript">
+myColor.set(key, value);
+myColor.set(map);
+</pre>
+
+<h3>Arguments</h3>
+
+<ol>
+<li>key - (<em>string</em>) Name of the color component to be set.</li>
+<li>value - (<em>mixed</em>) Value of the color component to be set.</li>
+</ol>
+
+<h3>Returns</h3>
+
+<ul>
+<li>(<em>mixed</em>) The new value of the color component</li>
+</ul>
+
+<h3>Examples</h3>
+
+<pre class="javascript">
+var orange = new Color('#FF9900');
+console.log(orange.getHex()); // outputs #FF9900
+orange.set('red', 0);
+console.log(orange.getHex()); // outputs #009900
+</pre>
+
+
+
+
+
+
+
+
+
+
+
+
+<h2 id="Color:clone"><a href="#Color:clone">Color Method: clone</a></h2>
+
+<p class="description">Create a duplicate of this Color instance</p>
+
+<h3>Syntax</h3>
+<pre class="javascript">
+var dup = myColor.clone();
+</pre>
+
+<h3>Returns</h3>
+
+<ul>
+<li>(<em>Color</em>) A dupcliate of this Color instance.</li>
+</ul>
+
+<h3>Examples</h3>
+
+<pre class="javascript">
+var orange = new Color('#FF9900');
+var dup = orange.clone();
+console.log(orange.getHex() == dup.getHex());  // outputs true
+console.log(orange == dup);  // outputs false
+</pre>
+
+
+
+
+
+
+
+
+
+<h2 id="Color:copy"><a href="#Color:clone">Color Method: copy</a></h2>
+
+<p class="description">Copy values from another Color instance</p>
+
+<h3>Syntax</h3>
+<pre class="javascript">
+myColor.copy(color);
+</pre>
+
+<h3>Arguments</h3>
+
+<ol>
+<li>color - (<em>Color</em>) another Color instance to copy the values from</li>
+</ol>
+
+<h3>Returns</h3>
+
+<ul>
+<li>(<em>Color</em>) This Color</li>
+</ul>
+
+<h3>Examples</h3>
+
+<pre class="javascript">
+var orange = new Color('#FF9900');
+var blue = new Color('#0000FF');
+console.log(orange.getHex()); // outputs #FF9900
+orange.copy(blue);
+console.log(orange.getHex()); // outputs #0000FF
+</pre>
+
+
+
+
+
+
+
+
+
+
+
+<h2 id="Color:format"><a href="#Color:format">Color Method: format</a></h2>
+
+<p class="description">Returns a tokenized string from the Color's component values</p>
+
+<h3>Syntax</h3>
+<pre class="javascript">
+myColor.format(string);
+</pre>
+
+<h3>Arguments</h3>
+
+<ol>
+<li>string - (<em>string</em>) The string to return, with tokens expressed as %token% that are replaced with component values. Tokens are as follows:
+	<ul>
+		<li>r : red</li>
+		<li>g : green</li>
+		<li>b : blue</li>
+		<li>h : hue</li>
+		<li>s : saturation</li>
+		<li>l : lightness</li>
+		<li>v : brightness</li>
+		<li>a : alpha</li>
+		<li>x : hex</li>
+		<li>d : decimal</li>
+	</ul>
+</li>
+
+</ol>
+
+<h3>Returns</h3>
+
+<ul>
+<li>(<em>string</em>) String argument with tokens replaced by this Color's mapped component values</li>
+</ul>
+
+<h3>Examples</h3>
+<pre class="javascript">
+var orange = new Color('#FF9900');
+var message = 'This color has a red component value of %r% and a green component value of %g%';
+console.log(orange.format(message));  // outputs This color has a red component value of 255 and a green component value of 153
+</pre>
+
+
+
+
+
+
+
+
+
+
+
+
+<h2 id="Color:interpolate"><a href="#Color:interpolate">Color Method: interpolate</a></h2>
+
+<p class="description">Sets the invoking Color instance component values to a point between the original value and the destination Color instance component value, modified by the factor</p>
+
+<h3>Syntax</h3>
+<pre class="javascript">
+myColor.interpolate(destination, factor);
+</pre>
+
+<h3>Arguments</h3>
+
+<ol>
+<li>destination - (<em>Color</em>) A Color instance to blend with this Color</li>
+<li>factor - (<em>Number</em>) 0-1, where 0 is the origin Color and 1 is the destination Color, and 0.5 is halfway between. This method will "blend" the colors.</li>
+</ol>
+
+<h3>Returns</h3>
+
+<ul>
+<li>(<em>Color</em>) This Color</li>
+</ul>
+
+<h3>Examples</h3>
+<pre class="javascript">
+var orange = new Color('#FF9900');
+var black = new Color(0);
+orange.interpolate(black, 0.2);
+console.log(orange.toHex());  // outputs #CC7A00
+</pre>
+
+
+
+
+
+
+
+
+
+
+
+
+<h2 id="Color:subscribe"><a href="#Color:subscribe">Color Method: subscribe</a></h2>
+
+<p class="description">Subscribe to (aka "listen for") and react to an event broadcast.</p>
+
+<h3>Syntax</h3>
+<pre class="javascript">
+myColor.subscribe(type, callback);
+</pre>
+
+<h3>Arguments</h3>
+<ol>
+<li>type - (<em>string</em>) Event type to listen for</li>
+<li>fn - (<em>function</em>) Function to invoke when the event type has been broadcast</li>
+</ol>
+
+<h3>Returns</h3>
+<ul>
+<li>(<em>null</em>)</li>
+</ul>
+
+<h3>Examples</h3>
+<pre class="javascript">
+var color = new Color();
+color.subscribe('updated', myFunction);
+</pre>
+
+
+
+
+
+
+
+
+
+
+
+<h2 id="Color:unsubscribe"><a href="#Color:unsubscribe">Color Method: unsubscribe</a></h2>
+
+<p class="description">Stop subscribing to event broadcasts of type type.</p>
+
+<h3>Syntax</h3>
+<pre class="javascript">
+myColor.unsubscribe(type, callback);
+</pre>
+
+<h3>Arguments</h3>
+<ol>
+<li>type - (<em>string</em>) Event type to stop listening for</li>
+<li>fn - (<em>function</em>) Function to remove from list of registered callbacks.</li>
+</ol>
+
+<h3>Returns</h3>
+<ul>
+<li>(<em>null</em>)</li>
+</ul>
+
+<h3>Examples</h3>
+<pre class="javascript">
+color.unsubscribe('updated', myFunction);
+</pre>
+
+
+
+
+
+
+
+
+
+
+<h2 id="Color:broadcast"><a href="#Color:broadcast">Color Method: broadcast</a></h2>
+
+<p class="description">Notify this listener than an event of type type has occured.</p>
+
+<h3>Syntax</h3>
+<pre class="javascript">
+myColor.broadcast(type[, params]);
+</pre>
+
+<h3>Arguments</h3>
+<ol>
+<li>type - (<em>string</em>) Type of event being broadcast</li>
+<li>params - (<em>array</em>, optional) Array of arguments to pass to callbacks subscribed to this event type</li>
+</ol>
+
+<h3>Returns</h3>
+<ul>
+<li>(<em>null</em>)</li>
+</ul>
+
+<h3>Examples</h3>
+<pre class="javascript">
+var color = new Color();
+color.broadcast('updated');
+</pre>
+
+
+
+
+
+
+
+
+
+
+
+<h2 id="Color:getHex"><a href="#Color:getHex">Color Method: getHex</a></h2>
+
+<p class="description"></p>
+
+<h3>Syntax</h3>
+<pre class="javascript">
+myColor.getHex();
+</pre>
+
+<h3>Returns</h3>
+<ul>
+<li>(<em>String</em>) Returns a CSS-formatted hex string [e.g., #FF9900] from the Color's component values</li>
+</ul>
+
+<h3>Examples</h3>
+<pre class="javascript">
+var color = new Color({red:255});
+console.log(color.getHex());  // output #FF0000
+</pre>
+
+
+
+
+
+
+
+
+
+<h2 id="Color:getHSL"><a href="#Color:getHSL">Color Method: getHSL</a></h2>
+
+<p class="description"></p>
+
+<h3>Syntax</h3>
+<pre class="javascript">
+myColor.getHSL();
+</pre>
+
+<h3>Returns</h3>
+<ul>
+<li>(<em>String</em>) Returns a CSS-formatted HSL string [e.g., hsl(360, 100%, 100%)] from the Color's component values</li>
+</ul>
+
+<h3>Examples</h3>
+<pre class="javascript">
+var color = new Color({green:255});
+console.log(color.getHSL());  // output hsl(120, 100%, 50%)
+</pre>
+
+
+
+
+
+
+
+
+
+
+<h2 id="Color:getHSLA"><a href="#Color:getHSLA">Color Method: getHSLA</a></h2>
+
+<p class="description"></p>
+
+<h3>Syntax</h3>
+<pre class="javascript">
+myColor.getHSLA();
+</pre>
+
+<h3>Returns</h3>
+<ul>
+<li>(<em>String</em>) Returns a CSS-formatted HSLA string [e.g., hsl(360, 100%, 100%, 0.5)] from the Color's component values</li>
+</ul>
+
+<h3>Examples</h3>
+<pre class="javascript">
+var color = new Color({green:255, alpha:0.2});
+console.log(color.getHSLA());  // output hsla(120, 100%, 50%, 0.2)
+</pre>
+
+
+
+
+
+
+
+
+
+
+<h2 id="Color:getRGB"><a href="#Color:getRGB">Color Method: getRGB</a></h2>
+
+<p class="description"></p>
+
+<h3>Syntax</h3>
+<pre class="javascript">
+myColor.getRGB();
+</pre>
+
+<h3>Returns</h3>
+<ul>
+<li>(<em>String</em>) Returns a CSS-formatted RGB string [e.g., rgb(255, 153, 0)] from the Color's component values</li>
+</ul>
+
+<h3>Examples</h3>
+<pre class="javascript">
+var orange = new Color('#FF9900');
+console.log(orange.getRGB());  // output rgb(255, 153, 0)
+</pre>
+
+
+
+
+
+
+
+
+
+
+
+
+<h2 id="Color:getRGBA"><a href="#Color:getRGBA">Color Method: getRGBA</a></h2>
+
+<p class="description"></p>
+
+<h3>Syntax</h3>
+<pre class="javascript">
+myColor.getRGBA();
+</pre>
+
+<h3>Returns</h3>
+<ul>
+<li>(<em>String</em>) Returns a CSS-formatted RGB string [e.g., rgb(255, 153, 0, 0.2)] from the Color's component values</li>
+</ul>
+
+<h3>Examples</h3>
+<pre class="javascript">
+var orange = new Color({red:255, alpha:0.2});
+console.log(orange.getRGBA());  // output rgba(255, 0, 0, 0.2)
+</pre>
+
+
+
+
+
+
+
+
+
+
+<h2 id="Color:getPRGB"><a href="#Color:getPRGB">Color Method: getPRGB</a></h2>
+
+<p class="description"></p>
+
+<h3>Syntax</h3>
+<pre class="javascript">
+myColor.getPRGB();
+</pre>
+
+<h3>Returns</h3>
+<ul>
+<li>(<em>String</em>) Returns a CSS-formatted percentile RGB string [e.g., rgb(100%, 50%, 0)] from the Color's component values</li>
+</ul>
+
+<h3>Examples</h3>
+<pre class="javascript">
+var orange = new Color('#FF9900');
+console.log(orange.getPRGB());  // output rgb(100%, 60%, 0%)
+</pre>
+
+
+
+
+
+
+
+
+
+<h2 id="Color:getPRGBA"><a href="#Color:getPRGBA">Color Method: getPRGBA</a></h2>
+
+<p class="description"></p>
+
+<h3>Syntax</h3>
+<pre class="javascript">
+myColor.getPRGBA();
+</pre>
+
+<h3>Returns</h3>
+<ul>
+<li>(<em>String</em>) Returns a CSS-formatted percentile RGBA string [e.g., rgb(100%, 50%, 0, 0.5)] from the Color's component values</li>
+</ul>
+
+<h3>Examples</h3>
+<pre class="javascript">
+var color = new Color({red:255,alpha:0.2);
+console.log(color.getPRGBA());  // output rgba(100%, 0%, 0%, 0.2)
+</pre>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h2 id="Color:tween"><a href="#Color:tween">Color Method: tween</a></h2>
+
+<p class="description">Blends the color from it's current state to the target Color over the duration</p>
+
+<h3>Syntax</h3>
+<pre class="javascript">
+myColor.tween(duration, color);
+</pre>
+
+<h3>Arguments</h3>
+<ol>
+<li>duration - (<em>number</em>) Duration of tween in millisecond</li>
+<li>color - (<em>mixed</em>) Color representation that makes up the destination (final) color components.</li>
+</ol>
+
+<h3>Returns</h3>
+<ul>
+<li>(<em>number</em>) ID (integer) of the setInterval call used to animate the tween.</li>
+</ul>
+
+<h3>Examples</h3>
+<pre class="javascript">
+var color = new Color('#FF9900');
+color.tween(2000, '#FFFFFF');
+</pre>
+
+
+
+
+
+
+
+
+
+
+
+
+<h2 id="Color:bind"><a href="#Color:bind">Color Method: bind</a></h2>
+
+<p class="description">Binds the color to an object's property - whenever the Color is updated, the property will be set to the value of the Color instance's toString method</p>
+
+<h3>Syntax</h3>
+<pre class="javascript">
+myColor.bind(object, property);
+</pre>
+
+<h3>Arguments</h3>
+<ol>
+<li>object - (<em>object</em>) Object containing the property to update</li>
+<li>property - (<em>string</em>) Name of the property to update</li>
+</ol>
+
+<h3>Returns</h3>
+<ul>
+<li>(<em>null</em>)</li>
+</ul>
+
+<h3>Examples</h3>
+<pre class="javascript">
+var color = new Color();
+color.bind(myElement.style, 'backgroundColor');
+</pre>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h2 id="Color:Color-random"><a href="#Color:Color-random">Function: Color.random</a></h2>
+
+<p class="description">Returns a Color instance of a random color</p>
+
+<h3>Syntax</h3>
+<pre class="javascript">
+var randomColor = Color.random();
+</pre>
+
+<h3>Returns</h3>
+<ul>
+<li>(<em>Color</em>) This Color</li>
+</ul>
+
+<h3>Examples</h3>
+<pre class="javascript">
+var randomColor = Color.random();
+console.log(randomColor.getHex());
+</pre>
+
+
+
+
+
+
+
+
+
+
+<h2 id="Color:Color-bind"><a href="#Color:Color-bind">Function: Color.bind</a></h2>
+
+<p class="description">Returns a Color instance bound to an object's property, set initially to the value of the property, and updating that property when the color is modified.</p>
+
+<h3>Syntax</h3>
+<pre class="javascript">
+var color = Color.bind(object, property);
+</pre>
+
+<h3>Arguments</h3>
+<ol>
+<li>object - (<em>object</em>) Object containing the property to update</li>
+<li>property - (<em>string</em>) Name of the property to update</li>
+</ol>
+
+<h3>Returns</h3>
+<ul>
+<li>(<em>Color</em>) A new Color instance, set to the value of the object's property.</li>
+</ul>
+
+<h3>Examples</h3>
+<pre class="javascript">
+var color = Color.bind(myElement.style, 'backgroundColor');
+console.log(color.getHex());  // outputs the hex value of myElement.style.backgroundColor
+color.hex('#FF0000');  // myElement.style.backgroundColor will display as blue
+console.log(myElement.style.backgroundColor);  // outputs #FF0000
+</pre>
+
+
+
+
+</div>
+
+
+
+
+<div class="menu">	
+
+
+<h4><a href="#Color">Color</a></h4>
+<div><a href="#Color:parse">parse</a></div>
+<div><a href="#Color:hex">hex</a></div>
+<div><a href="#Color:red">red</a></div>
+<div><a href="#Color:green">green</a></div>
+<div><a href="#Color:blue">blue</a></div>
+<div><a href="#Color:hue">hue</a></div>
+<div><a href="#Color:saturation">saturation</a></div>
+<div><a href="#Color:lightness">lightness</a></div>
+<div><a href="#Color:brightness">brightness</a></div>
+<div><a href="#Color:decimal">decimal</a></div>
+<div><a href="#Color:alpha">alpha</a></div>
+<div><a href="#Color:set">set</a></div>
+<div><a href="#Color:clone">clone</a></div>
+<div><a href="#Color:clone">copy</a></div>
+<div><a href="#Color:format">format</a></div>
+<div><a href="#Color:interpolate">interpolate</a></div>
+<div><a href="#Color:subscribe">subscribe</a></div>
+<div><a href="#Color:unsubscribe">unsubscribe</a></div>
+<div><a href="#Color:broadcast">broadcast</a></div>
+<div><a href="#Color:getHex">getHex</a></div>
+<div><a href="#Color:getHSL">getHSL</a></div>
+<div><a href="#Color:getHSLA">getHSLA</a></div>
+<div><a href="#Color:getRGB">getRGB</a></div>
+<div><a href="#Color:getRGBA">getRGBA</a></div>
+<div><a href="#Color:getPRGB">getPRGB</a></div>
+<div><a href="#Color:getPRGBA">getPRGBA</a></div>
+<div><a href="#Color:tween">tween</a></div>
+<div><a href="#Color:bind">bind</a></div>
+<div><a href="#Color:Color-random">Color.random</a></div>
+<div><a href="#Color:Color-bind">Color.bind</a></div>
+
+
+</div>
+
+
+
+</body>
+
+</html>
