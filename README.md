@@ -1,0 +1,1 @@
+Revised and updated Color AMD module for MooTools.
